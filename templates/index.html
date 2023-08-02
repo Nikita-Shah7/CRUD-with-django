@@ -321,8 +321,8 @@
                         <tr>
                             <td>
                                 <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox-{{forloop.counter}}" name="checkbox" value="{{emp.id}}">
-                                    <label for="checkbox-{{forloop.counter}}"></label>
+                                    <input type="checkbox" id="checkbox-{{emp.id}}" name="checkbox" value="{{emp.id}}" onchange="handleCheckboxChange('{{emp.id}}')" {% if emp.checkbox %}checked{% endif %}>
+                                    <label for="checkbox"></label>
                                 </span>
                             </td>
                             <td>{{ emp.name }}</td>
@@ -441,7 +441,7 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="id" value="{{ emp.id }}">
-                        <p>Are you sure you want to delete this Records?</p>
+                        <p>Are you sure you want to delete these Records?</p>
                         <p class="text-warning"><small>This action cannot be undone.</small></p>
                     </div>
                     <div class="modal-footer">
@@ -460,7 +460,7 @@
                 <form action="/" method="post" name="deleteAll">
                     {% csrf_token %}
                     <div class="modal-header">
-                        <h4 class="modal-title">Delete Employees</h4>
+                        <h4 class="modal-title">Delete Employee</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -500,6 +500,28 @@
                 }
             });
         });
+
+
+        {% comment %} pass parameters from HTML to views.py {% endcomment %}
+        function handleCheckboxChange(emp_id) {
+            var checkboxValue = $('#checkbox-' + emp_id).prop('checked');
+            var val = $('#checkbox-' + emp_id).val();
+            $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:8000/',
+                data: {
+                    'checkbox_value': checkboxValue,
+                    'value': val,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                // success: function (response) {
+                    //alert("Success");
+                //},
+                //error: function (xhr, status, error) {
+                    //alert("Error");
+                //}
+            });
+        }
     </script>
 </body>
 

@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 class Employee(models.Model):
     # 'id' can only be used as a field name if the field also sets 'primary_key=True
     id = models.CharField(max_length=7,primary_key=True)
-    checkbox = models.BooleanField(default=0)
+    checkbox = models.BooleanField(default=False)
     name = models.CharField(max_length=20)
     email = models.EmailField(max_length=30)
     address = models.TextField(max_length=200)
