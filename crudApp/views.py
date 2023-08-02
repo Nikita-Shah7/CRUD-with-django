@@ -7,7 +7,7 @@ def index(request):
     print("nikPOST")
     if request.method == 'POST':
         if 'add' in request.POST:
-            print("nikAdd")
+            # print("nikAdd")
             id = str(uuid.uuid4())[:7]
             checkbox = False
             name = request.POST['name']
@@ -17,7 +17,7 @@ def index(request):
             newEmployee = Employee(id=id,checkbox=checkbox,name=name,email=email,address=address,phone=phone)
             newEmployee.save()
         elif 'edit' in request.POST:
-            print("nikEdit")
+            # print("nikEdit")
             id = request.POST['id']
             name = request.POST['name']
             email = request.POST['email']
@@ -31,35 +31,35 @@ def index(request):
                 emp.phone = phone
                 emp.save()
         elif 'delete' in request.POST:
-            print("nikDelete")
+            # print("nikDelete")
             id = request.POST['id']
             deleteEmployee = Employee.objects.filter(id=id)
             for emp in deleteEmployee:
                 emp.delete()
         elif 'deleteAll' in request.POST:
-            print("nikDeleteAll")
+            # print("nikDeleteAll")
             checkedEmployee = Employee.objects.filter(checkbox=True)
             for emp in checkedEmployee:
-                print("nikDeleteAll..")
+                # print("nikDeleteAll..")
                 emp.delete()
         else:
-            print("nikElse")
+            # print("nikElse")
             checkbox_value = request.POST['checkbox_value']
-            print(checkbox_value)
+            # print(checkbox_value)
             id = request.POST['value']
-            print(id)
+            # print(id)
             checkedEmployee = Employee.objects.filter(id=id)
-            print(checkedEmployee)
+            # print(checkedEmployee)
             for emp in checkedEmployee:
-                print("nikForLoop")
+                # print("nikForLoop")
                 if checkbox_value=="true":
                     emp.checkbox = True
-                    print("nikTrue")
+                    # print("nikTrue")
                 elif checkbox_value=="false":
-                    print("nikFalse")
+                    # print("nikFalse")
                     emp.checkbox = False
                 else:
-                    print("nikLast")
+                    # print("nikLast")
                     print(emp.checkbox)
                 emp.save()
 
@@ -69,6 +69,6 @@ def index(request):
         'employee' : employee,
         'count':count
     }
-    for emp in employee:
-        print(emp.checkbox,type(emp.checkbox))
+    # for emp in employee:
+    #     print(emp.checkbox,type(emp.checkbox))
     return render(request,"index.html",context)
