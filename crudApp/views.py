@@ -2,11 +2,23 @@ from django.shortcuts import render
 from .models import Employee
 import uuid
 
+
 # Create your views here.
+# when you submit a form with a file input field (<input type="file">), the uploaded file is stored in the request.FILES dictionary.
 def index(request):
-    print("nikPOST")
     if request.method == 'POST':
-        if 'add' in request.POST:
+        # print("nikPOST")
+        if request.FILES:
+            # print("nikUploadFILES")
+            emp_id = request.POST['id']
+            addImgEmployee = Employee.objects.filter(id=emp_id)
+            profileImg = request.FILES['profileImg']
+            # print(profileImg,type(profileImg))
+            for emp in addImgEmployee:
+                # print("nikForLoop")
+                emp.profileImg = profileImg
+                emp.save()
+        elif 'add' in request.POST:
             # print("nikAdd")
             id = str(uuid.uuid4())[:7]
             checkbox = False

@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -281,6 +283,12 @@
         .modal form label {
             font-weight: normal;
         }
+
+        img {
+            &:hover {
+                cursor: pointer;
+            }
+        }
     </style>
 </head>
 
@@ -309,6 +317,7 @@
                                 <label for="selectAll"></label>
                             </span>
                         </th>
+                        <th>Profile</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Address</th>
@@ -318,29 +327,43 @@
                 </thead>
                 <tbody>
                     {% for emp in employee %}
-                        <tr>
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox-{{emp.id}}" name="checkbox" value="{{emp.id}}" onchange="handleCheckboxChange('{{emp.id}}')" {% if emp.checkbox %}checked{% endif %}>
-                                    <label for="checkbox"></label>
-                                </span>
-                            </td>
-                            <td>{{ emp.name }}</td>
-                            <td>{{ emp.email }}</td>
-                            <td>{{ emp.address }}</td>
-                            <td>{{ emp.phone|stringformat:"010d"|slice:"0:3" }}-{{ emp.phone|stringformat:"010d"|slice:"3:6" }}-{{ emp.phone|stringformat:"010d"|slice:"6:10" }}</td>
-                            <td>
-                                <a href="#editEmployeeModal-{{forloop.counter}}" class="edit" data-toggle="modal"><i class="material-icons"
-                                        data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                <a href="#deleteEmployeeModal-{{forloop.counter}}" class="delete" data-toggle="modal"><i class="material-icons"
-                                        data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <span class="custom-checkbox">
+                                <input type="checkbox" id="checkbox-{{emp.id}}" name="checkbox" value="{{emp.id}}"
+                                    onchange="handleCheckboxChange('{{emp.id}}')" {% if emp.checkbox %}checked{% endif %}>
+                                <label for="checkbox"></label>
+                            </span>
+                        </td>
+                        <td>
+                            {% if emp.profileImg %}
+                            <img src="{{ emp.profileImg.url }}" alt="{{ emp.id }}_ProfileImg" 
+                                href="#imageUploadModal-{{forloop.counter}}" width="50" class="img-rounded"
+                                id="profile-{{emp.id}}" data-toggle="modal" data-toggle="tooltip">
+                            {% else %}
+                            <img src="{% static 'default_profile.png' %}" alt="Default Profile Image"
+                                href="#imageUploadModal-{{forloop.counter}}" width="50" class="img-rounded"
+                                id="profile-{{emp.id}}" data-toggle="modal" data-toggle="tooltip">
+                            {% endif %}
+                        </td>
+
+                        <td>{{ emp.name }}</td>
+                        <td>{{ emp.email }}</td>
+                        <td>{{ emp.address }}</td>
+                        <td>{{ emp.phone|stringformat:"010d"|slice:"0:3" }}-{{ emp.phone|stringformat:"010d"|slice:"3:6"}}-{{ emp.phone|stringformat:"010d"|slice:"6:10" }}</td>
+                        <td>
+                            <a href="#editEmployeeModal-{{forloop.counter}}" class="edit" data-toggle="modal"><i
+                                    class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                            <a href="#deleteEmployeeModal-{{forloop.counter}}" class="delete" data-toggle="modal"><i
+                                    class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
             <div class="clearfix">
-                <div class="hint-text">Showing {% if count < 5 %}<b>{{count}}</b>{% else %}<b>5</b>{% endif %} out of <b>{{count}}</b> entries</div>
+                <div class="hint-text">Showing {% if count < 5 %}<b>{{count}}</b>{% else %}<b>5</b>{% endif %} out of
+                        <b>{{count}}</b> entries</div>
                 <ul class="pagination">
                     <li class="page-item disabled"><a href="#">Previous</a></li>
                     <li class="page-item"><a href="#" class="page-link">1</a></li>
@@ -422,6 +445,33 @@
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
                         <input type="submit" class="btn btn-info" name="edit" value="Save" name="edit">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <!-- Upload profileImg Modal HTML -->
+    {% for emp in employee %}
+    <div id="imageUploadModal-{{forloop.counter}}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/" method="post" name="upload" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h4 class="modal-title">Upload Profile Pic</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="{{ emp.id }}">
+                        <div class="form-group">
+                            <label for="image">Choose Image:</label>
+                            <input type="file" class="form-control-file" id="image-{{emp.id}}" name="profileImg">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                        <input type="submit" class="btn btn-info" name="upload" value="Upload" name="edit">
                     </div>
                 </form>
             </div>
@@ -515,10 +565,10 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}'
                 },
                 // success: function (response) {
-                    //alert("Success");
+                //alert("Success");
                 //},
                 //error: function (xhr, status, error) {
-                    //alert("Error");
+                //alert("Error");
                 //}
             });
         }

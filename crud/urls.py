@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 admin.site.site_header = "Nik Admin"
 admin.site.site_title = "Nik CRUD"
 admin.site.index_title = "Nik"
@@ -24,4 +27,4 @@ admin.site.index_title = "Nik"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include("crudApp.urls"))
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # helps to create url when we upload an img
